@@ -1,0 +1,81 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/favicon.ico'); /* Cambia 'tu-imagen.jpg' por la ruta de tu imagen */
+    background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
+    background-position: center;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+  
+  .background-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 80px); /* Tamaño de los cuadrados */
+    grid-auto-rows: 80px;
+    gap: 12px; /* Espacio entre cuadros */
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-content: center;
+    z-index: 0;
+  }
+  
+  .square {
+    background-color: rgba(0, 0, 0, 0.6); /* Cuadrados semi-transparentes */
+    border-radius: 4px;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .square.active {
+    box-shadow: 0 0 10px #00aaff, 0 0 20px #00aaff; /* Efecto de iluminación */
+  }
+  
+  .login-box {
+    position: absolute; /* Centrado absoluto */
+    top: 50%; /* Centrado vertical */
+    left: 50%; /* Centrado horizontal */
+    transform: translate(-50%, -50%); /* Ajuste perfecto al centro */
+    max-width: 320px;
+    padding: 2rem;
+    background-color: rgba(0,0,0,0.75); /* Fondo negro semi-transparente para el login */
+    border: 2px solid #00aaff;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+  }
+  
+  .login-box input,
+  .login-box button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 6px;
+  }
+  
+  .login-box input {
+    background-color: #111;
+    color: white;
+  }
+  
+  .login-box button {
+    background-color: #00aaff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .login-box button:hover {
+    background-color: #0077aa;
+  }
+  

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Realizar Compra</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        select, input[type="number"] {
+            padding: 8px;
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #3155A7;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #mensaje {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .exito {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Comprar Producto</h1>
+
+    <label for="producto">Seleccionar producto:</label>
+    <select id="producto"></select>
+
+    <label for="cantidad">Cantidad:</label>
+    <input type="number" id="cantidad" min="1" value="1">
+
+    <label for="cliente">Seleccionar cliente:</label>
+    <select id="cliente"></select>
+
+    <label for="empleado">Seleccionar empleado:</label>
+    <select id="empleado"></select>
+
+    <button onclick="realizarCompra()">Comprar</button>
+
+    <div id="mensaje"></div>
+
+    <script>
+        async function cargarProductos() {
+            const select = document.getElementById("producto");
+            try {
+                const res = await fetch("/api/tabla_productos");
+                const productos = await res.json();
+
+                productos.forEach(p => {
+                    const option = document.createElement("option");
+                    option.value = p.id_producto;
+                    option.textContent = `${p.nombre} (Stock: ${p.stock}, ${p.precio}€)`;
+                    select.appendChild(option);
+                });
+            } catch (err) {
+                console.error("Error cargando productos:", err);
+                mostrarMensaje("Error al cargar productos.", true);
+            }
+        }
+
+        async function cargarClientes() {
+            const select = document.getElementById("cliente");
+            try {
+                const res = await fetch("/api/clientes");
+                const clientes = await res.json();
+
+                clientes.forEach(c => {
+                    const option = document.createElement("option");
+                    option.value = c.id_cliente;
+                    option.textContent = `${c.nombre}`;
+                    select.appendChild(option);
+                });
+            } catch (err) {
+                console.error("Error cargando clientes:", err);
+                mostrarMensaje("Error al cargar clientes.", true);
+            }
+        }
+
+        async function cargarEmpleados() {
+            const select = document.getElementById("empleado");
+            try {
+                const res = await fetch("/api/datos_formulario");
+                const empleados = await res.json();
+
+                empleados.forEach(e => {
+                    const option = document.createElement("option");
+                    option.value = e.id_empleado;
+                    option.textContent = `${e.nombre}`;
+                    select.appendChild(option);
+                });
+            } catch (err) {
+                console.error("Error cargando empleados:", err);
+                mostrarMensaje("Error al cargar empleados.", true);
+            }
+        }
+
+        async function realizarCompra() {
+            const id_producto = document.getElementById("producto").value;
+            const cantidad = document.getElementById("cantidad").value;
+            const id_cliente = document.getElementById("cliente").value;
+            const id_empleado = document.getElementById("empleado").value;
+
+            if (!id_producto || !id_cliente || !id_empleado || cantidad <= 0) {
+                mostrarMensaje("Por favor, completa todos los campos correctamente.", true);
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/comprar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ id_producto, cantidad, id_cliente, id_empleado })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    mostrarMensaje(`Compra realizada correctamente. ID de venta: ${data.id_venta}`, false);
+                } else {
+                    const mensajeError = data.error || "Error desconocido.";
+                    mostrarMensaje(`Error: ${mensajeError}`, true);
+                }
+            } catch (err) {
+                console.error("Error al comprar:", err);
+                mostrarMensaje("Error al conectar con el servidor.", true);
+            }
+        }
+
+        function mostrarMensaje(texto, esError) {
+            const mensaje = document.getElementById("mensaje");
+            mensaje.textContent = texto;
+            mensaje.className = esError ? "error" : "exito";
+        }
+
+        // Cargar datos al iniciar
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarProductos();
+            cargarClientes();
+            cargarEmpleados();
+        });
+    </script>
+</body>
+</html>

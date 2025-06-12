@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Inicio - AmsFlow</title>
+    <link rel="icon" href="../static/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../static/css/inicio.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="fotologo">
+                    <!--<img src="../static/images/favicon.ico" alt="">-->
+                </div>
+                <h2>AmsFlow</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="javascript:void(0)" onclick="showSection('section1')">Estadísticas</a></li>
+                <li><a href="javascript:void(0)" onclick="showSection('section2')">Productos</a></li>
+                <li><a href="javascript:void(0)" onclick="showSection('section3')">Pedidos</a></li>
+                <li><a href="javascript:void(0)" onclick="showSection('section4')">AmsMind</a></li>
+            </ul>
+
+            <div class="sidebar-user">
+                <img src="../static/images/amg.png" alt="" class="user-icon">
+                <span id="nombre-usuario"></span>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <section id="section1" class="content-section active">
+                <h2>Estadísticas</h2>
+                <h4>Finanzas</h4>
+             <!-->   <div class="mes-selector">
+                    <label for="mes">Selecciona un mes:</label>
+                    <select id="mes">
+                        <option value="">Todos</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>-->
+                <div>
+                    <p><strong>Ingresos Totales:</strong> <span id="ingresosTotales">--</span></p>
+                </div>
+
+
+                <div class="charts-container">
+                    <canvas id="graficoBarras"></canvas>
+                    <canvas id="graficoLineas"></canvas>
+                    <canvas id="graficoProductos"></canvas>
+                    <canvas id="graficoClientes"></canvas>
+                    <canvas id="graficoCategorias"></canvas>
+                    <canvas id="graficoEstacionalidad"></canvas>
+
+
+                </div>
+            </section>
+
+            <section id="section2" class="content-section">
+                <h2>Pedidos</h2>
+
+                <!-- Filtro por categoría -->
+                <div class="filtro-categoria">
+                    <label for="filtroCategoria">Filtrar por categoría:</label>
+                    <select id="filtroCategoria">
+                        <option value="">Todas</option>
+                        <!-- Opciones se llenarán dinámicamente -->
+                    </select>
+                </div>
+
+                <!-- Tabla de productos -->
+                <div class="tabla-productos-container">
+                    <table id="tabla-productos">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Categoría</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Filas se llenarán dinámicamente con JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="section3" class="content-section">
+                <h1>Lista de Ventas</h1>
+                <table id="tabla-ventas">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Empleado</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <div id="detalles-venta"
+                    style="display:none;">
+                    <h2>Detalles de la Venta</h2>
+                    <table id="tabla-detalles-body">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unitario</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detalleTabla"></tbody>
+                    </table>
+                    <button onclick="cerrarModal()" style="margin-top: 10px;">Cerrar</button>
+                </div>
+            </section>
+
+            <section id="section4" class="content-section">
+                <h1>Chat con AmsMind</h1>
+                <div class="chatbox" id="chatbox"></div>
+
+                <form id="chat-form" action="" method="post">
+                    <input type="text" id="user_input" name="user_input" placeholder="Escribe tu pregunta..." required>
+                    <button type="submit">Enviar</button>
+                </form>
+                <!-- Indicador de carga -->
+                <div id="loading" style="display:none;">Pensando...</div>
+            </section>
+        </main>
+    </div>
+
+    <!-- (Todo el <head> y <body> se mantiene igual hasta la sección del script final) -->
+
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            let userInput = document.getElementById('user_input').value.trim();
+            let chatbox = document.getElementById('chatbox');
+            let loading = document.getElementById('loading');
+
+            // Mostrar mensaje del usuario en el chatbox
+            chatbox.innerHTML += '<div class="user-input"><strong>Tú:</strong> ' + userInput + '</div>';
+            document.getElementById('user_input').value = '';
+            loading.style.display = 'block';
+
+            const isImageRequest = userInput.toLowerCase().startsWith("imagen de ");
+
+            const endpoint = isImageRequest ? 'http://localhost:5000/image' : 'http://localhost:5000/chat';
+            const body = isImageRequest
+                ? JSON.stringify({ prompt: userInput })
+                : JSON.stringify({ message: userInput });
+
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: body,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    loading.style.display = 'none';
+
+                    if (data.image_base64) {
+                        chatbox.innerHTML += `
+                        <div class="gpt-response">
+                            <strong>AmsMind:</strong><br>
+                            <img src="data:image/png;base64,${data.image_base64}" alt="Imagen generada" style="max-width:100%; border-radius: 8px; margin-top: 10px;">
+                        </div>`;
+                    }
+                    else if (data.reply) {
+                        chatbox.innerHTML += `
+                            <div class="gpt-response">
+                                <strong>AmsMind:</strong> ${data.reply}
+                            </div>`;
+                    }
+                    else {
+                        chatbox.innerHTML += `
+                            <div class="gpt-response">
+                                <strong>AmsMind:</strong> Lo siento, no pude encontrar una respuesta.
+                            </div>`;
+                    }
+
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                })
+                .catch(error => {
+                    loading.style.display = 'none';
+                    console.error('Error en la llamada a la API:', error);
+                    chatbox.innerHTML += `
+                        <div class="gpt-response">
+                            <strong>AmsMind:</strong> Hubo un error al procesar tu solicitud.
+                        </div>`;
+                });
+        });
+    </script>
+
+
+
+
+    <script src="../static/js/inicio.js"></script>
+
+    <div id="modalGrafico" class="modal">
+        <span class="cerrar">&times;</span>
+        <canvas id="graficoAmpliado"></canvas>
+    </div>
+
+
+
+    <script>
+        const modal = document.getElementById("modalGrafico");
+        const graficoAmpliado = document.getElementById("graficoAmpliado");
+        const cerrar = document.querySelector(".cerrar");
+        let chartEnModal;
+
+        document.querySelectorAll("canvas").forEach((canvasOriginal) => {
+            canvasOriginal.addEventListener("click", () => {
+                if (chartEnModal) chartEnModal.destroy();
+
+                const originalChart = Chart.getChart(canvasOriginal);
+                if (!originalChart) return;
+
+                // Clonar los datos manualmente
+                const configCopia = {
+                    type: originalChart.config.type,
+                    data: JSON.parse(JSON.stringify(originalChart.config.data)),
+                    options: JSON.parse(JSON.stringify(originalChart.config.options))
+                };
+
+                // Crear el gráfico en el canvas del modal
+                chartEnModal = new Chart(graficoAmpliado.getContext("2d"), configCopia);
+
+                // Mostrar modal
+                modal.style.display = "flex";
+            });
+        });
+
+        cerrar.onclick = () => {
+            modal.style.display = "none";
+            if (chartEnModal) chartEnModal.destroy();
+        };
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+                if (chartEnModal) chartEnModal.destroy();
+            }
+        };
+    </script>
+
+
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            const nombre = localStorage.getItem("nombreUsuario");
+            if (nombre) {
+                document.getElementById("nombre-usuario").textContent = nombre;
+            }
+        });
+    </script>
+
+    <script>
+    function cerrarModal() {
+        document.getElementById("detalles-venta").style.display = "none";
+    }
+</script>
+
+
+
+
+</body>
+
+</html>

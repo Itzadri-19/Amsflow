@@ -1,0 +1,406 @@
+/* Reset básico para márgenes y padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilo general para el body */
+body {
+    height: 100vh;
+    display: flex;
+    background: linear-gradient(to right, 
+      #000000 10%, 
+      #02264b 40%,  
+      #02264b 45%, 
+      #02264b 70%,
+      #000000 100%);
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+}
+.fotologo {
+    max-height: 50px;
+    max-width: 50px;
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: #2c3e50;
+    color: white;
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.sidebar-header {
+    text-align: left;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+
+
+
+.sidebar h2 {
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.sidebar-menu li {
+    margin: 20px 0;
+}
+
+.sidebar-menu li a {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: background-color 0.3s;
+}
+
+.sidebar-menu li a:hover {
+    background-color: #34495e;
+}
+
+
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-top: 1px solid #34495e;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-content: stretch;
+    justify-content: space-around;
+}
+
+.user-icon {
+    height: 40px;
+    
+}
+
+
+.username {
+    font-size: 1rem;
+    color: #bbb;
+}
+
+
+
+
+/* Main Content */
+.main-content {
+    margin-left: 250px; /* Para que no se superponga al sidebar */
+    padding: 20px;
+    
+    overflow-y: auto;
+}
+
+.content-section {
+    display: none; /* Ocultar secciones por defecto */
+}
+
+.content-section.active {
+    display: block; /* Mostrar solo la sección activa */
+}
+
+.charts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.charts-container canvas {
+    width: calc(50% - 10px) !important; /* dos por fila */
+    aspect-ratio: 4 / 3; /* proporción adecuada para gráficos */
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .charts-container canvas {
+        width: 100% !important;
+        aspect-ratio: 16 / 9;
+    }
+}
+
+
+
+
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+/* Responsivo para pantallas pequeñas */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Estilos para los gráficos */
+canvas {
+    flex: 1;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+}
+
+/* Estilos del chat */
+.chatbox {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 8px;
+    height: 300px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+}
+
+.user-input, .gpt-response {
+    margin: 10px 0;
+}
+
+.user-input strong, .gpt-response strong {
+    color: #00aaff;
+}
+
+form {
+    display: flex;
+    gap: 10px;
+}
+
+#user_input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    flex: 1;
+    font-size: 1rem;
+    color: #333;
+}
+
+button {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button:hover {
+    background-color: #007acc;
+}
+
+/* Indicador de carga */
+#loading {
+    color: #00aaff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    display: none;
+}
+
+/* Mensaje de error */
+#error-message {
+    color: red;
+    font-size: 1.2rem;
+    text-align: center;
+    margin-top: 10px;
+    display: none;
+}
+
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.9);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal canvas {
+  width: 90% !important;
+  height: auto !important;
+  max-height: 80vh;
+  aspect-ratio: 16 / 9;
+  background-color: #111;
+  border-radius: 8px;
+}
+
+.cerrar {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
+/* Tabla de productos */
+#tabla-productos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #1c2a38;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Encabezado de tabla */
+#tabla-productos thead {
+    background-color: #34495e;
+}
+
+#tabla-productos th {
+    padding: 12px 16px;
+    text-align: left;
+    color: #ffffff;
+    font-size: 1rem;
+    border-bottom: 2px solid #2c3e50;
+}
+
+/* Cuerpo de la tabla */
+#tabla-productos td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #2c3e50;
+    font-size: 0.95rem;
+    color: #ecf0f1;
+}
+
+/* Filas alternas para mejor legibilidad */
+#tabla-productos tbody tr:nth-child(even) {
+    background-color: #253646;
+}
+
+/* Efecto hover en filas */
+#tabla-productos tbody tr:hover {
+    background-color: #3a5368;
+    transition: background-color 0.3s;
+}
+
+/* Estilo del select de categorías */
+#filtroCategoria {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: none;
+    background-color: #34495e;
+    color: white;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+#filtroCategoria:focus {
+    background-color: #3d5a73;
+}
+
+
+
+/* Tabla de productos */
+#tabla-ventas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #1c2a38;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Encabezado de tabla */
+#tabla-ventas thead {
+    background-color: #34495e;
+}
+
+#tabla-ventas th {
+    padding: 12px 16px;
+    text-align: left;
+    color: #ffffff;
+    font-size: 1rem;
+    border-bottom: 2px solid #2c3e50;
+}
+
+/* Cuerpo de la tabla */
+#tabla-ventas td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #2c3e50;
+    font-size: 0.95rem;
+    color: #ecf0f1;
+}
+
+/* Filas alternas para mejor legibilidad */
+#tabla-ventas tbody tr:nth-child(even) {
+    background-color: #253646;
+}
+
+/* Efecto hover en filas */
+#tabla-ventas tbody tr:hover {
+    background-color: #3a5368;
+    transition: background-color 0.3s;
+}
+
+/* Estilo del select de categorías */
+#filtroCategoria {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: none;
+    background-color: #34495e;
+    color: white;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+#filtroCategoria:focus {
+    background-color: #3d5a73;
+}
